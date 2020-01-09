@@ -21,21 +21,22 @@
 				<div align='center' style='background-color:rgba(210,180,250,0.5);padding:1px;color:#ffffff;'>
 					<a class="btn btn-default btn-sm" href='..'><i class="fa fa-arrow-left" style="color:#555555"></i></a><span align='center' style='color:#555555;'> 闭社打卡</span>
 					<h1 align='center'>记录</h1>
+					<span>(点击具体用户/项目查看统计)</span>
 				</div>
 				<table class="table table-striped table-bordered" style="word-break:break-all; word-wrap:break-all;">
 					<thead class="thead-light">
 						 <tr  class="row mx-0">
-						 	<th class="col-4" scope="col">用户</th>
-						 	<th class="col-4" scope="col">项目</th>
-						 	<th class="col-4" scope="col">时间</th>
+						 	<th class="col-3 col-sm-3 col-md-3 col-lg-4" scope="col">用户</th>
+						 	<th class="col-3 col-sm-3 col-md-4 col-lg-4" scope="col">项目</th>
+						 	<th class="col-6 col-sm-6 col-md-5 col-lg-4" scope="col">时间</th>
 						 </tr>
 					</thead>
 					<tbody>
 						{% for r in rs %}
 						<tr class="row mx-0"> 
-							<td class="col-4"><a href='./acct/{{r["acct"]}}'>{{r["acct"]}}</a></td> 
-							<td class="col-4"><a href='./it/{{r["it"]}}'>{{r["it"]}}</a></td> 
-							<td class="col-4">{{r["date"]}}</td>
+							<td class="col-3 col-sm-3 col-md-3 col-lg-4"><a href='./acct/{{r["acct"]}}'>{{r["acct"]}}</a></td> 
+							<td class="col-3 col-sm-3 col-md-4 col-lg-4"><a href='./it/{{r["it"]}}'>{{r["it"]}}</a></td> 
+							<td class="col-6 col-sm-6 col-md-5 col-lg-4">{{r["date"]}}</td>
 						</tr>
 						{% endfor %}
 					</tbody>
