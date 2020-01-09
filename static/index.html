@@ -93,7 +93,7 @@ function getAcct() {
 
 						$('#account-info .card-title').text(j["display_name"]);
 						$('#account-info .card-img-top')[0].src = j["avatar"];
-						$('#name-a')[0].href = '/' + acct;
+						$('#name-a')[0].href = 'web/acct/' + acct;
 						
 						getTop3();
 					}

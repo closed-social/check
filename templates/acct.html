@@ -54,7 +54,11 @@
 		    console.log(data);
 		},
 		error:(xhr,status,error) => {
-		    console.log(status,error);
+		    console.log(xhr);
+		    if(xhr.status == 404) {
+                alert('警告：不是真实用户');
+                location.href='../..';
+            }
 		}
 	}); 
 </script>
