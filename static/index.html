@@ -76,7 +76,6 @@ if(location.hostname === '127.0.0.1')
 	acct = 'test'
 else 
 	getAcct();
-getTop3();
 
 function getAcct() {
 	$.ajax({
@@ -94,7 +93,9 @@ function getAcct() {
 
 						$('#account-info .card-title').text(j["display_name"]);
 						$('#account-info .card-img-top')[0].src = j["avatar"];
-						$('#name-a')[0].href = acct;
+						$('#name-a')[0].href = '/' + acct;
+						
+						getTop3();
 					}
 				});
 			}
