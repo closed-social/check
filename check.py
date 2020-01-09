@@ -65,7 +65,7 @@ def allRecord():
     rs = [{
             'acct': e.acct,
             'it'  : e.it,
-            'date': e.tt.strftime('%m-%d %I:%M:%S %p')
+            'date': e.tt.strftime('%m-%d %I:%M:%S%p')
         } for e in query.all()
         ]
 
@@ -76,7 +76,7 @@ def acct_page(acct):
     query = Record.query.filter_by(acct=acct)
     rs = [{
             'it'  : e.it,
-            'date': e.tt.strftime('%m-%d %I:%M:%S %p')
+            'date': e.tt.strftime('%m-%d %I:%M:%S%p')
         } for e in query.all()
         ]
     
@@ -97,7 +97,7 @@ def it_page(it):
     query = Record.query.filter_by(it=it)
     rs = [{
             'acct'  : e.acct,
-            'date': e.tt.strftime('%m-%d %I:%M:%S %p')
+            'date': e.tt.strftime('%m-%d %I:%M:%S%p')
         } for e in query.all()
         ]
     
