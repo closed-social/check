@@ -1,0 +1,179 @@
+<!doctype html>
+<html>
+	<head>
+		<meta charset='UTF-8'>
+		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+		<link href="https://netdna.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+		<link href="https://cdn.bootcss.com/twitter-bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
+		<script src="https://cdn.bootcss.com/jquery/3.4.1/jquery.min.js"></script>
+		<title> 闭社打卡 </title>
+		<style>
+.btns .btn {
+	margin:3px;
+}
+			.mask {
+				position:absolute;
+				height:100%;
+				width:100%;
+				background:#e0e0e0e0;
+			}
+		</style>
+	</head>
+
+	<body style="background-color: #ffffff80;">
+
+		<div class="container" style="max-width:700px;" >
+			<h1>闭社打卡</h1>
+
+			<p><i>(For <span id="host"> __ </span>)</i></p>
+
+			<div class="card" style="width: 11rem;float:left;margin:0 5px;" id="account-info">
+				<img src="https://thu.closed.social/avatars/original/missing.png" class="card-img-top">
+				<div class="card-body">
+					<a id='name-a' href="/"><h5 class="card-title">Name</h5></a>
+					<p class="card-text">我的打卡记录 <button class="btn btn-default btn-sm" onclick="getTop3();"><i class="fa fa-refresh" style="color:#007bff"></i></button> </p>
+				</div>
+				<ul class="list-group list-group-flush" id="top-it">
+					<li class="list-group-item">/</li>
+					<li class="list-group-item">/</li>
+					<li class="list-group-item">/</li>
+				</ul>
+				<div class="card-body">
+					<a href="web/all" class="card-link">所有</a>
+					<a href="#" onclick="startCheck()" class="card-link">去打卡！</a>
+				</div>
+			</div>
+
+			<div>
+				<form class="form-inline" action="javascript:void(0);" onsubmit="send()" style="position:relative">
+
+					<div class="input-group mb-2 mr-sm-2">
+						<div class="input-group-prepend">
+							<div class="input-group-text">项目</div>
+						</div>
+						<input type="text" class="form-control" id="it-input" placeholder="打卡项目" readonly>
+					</div>
+
+					<div class="btns">
+						<button type="button" class="btn btn-info btn-sm it-new">新建...</button>
+					</div>
+
+					<button type="submit" class="btn btn-primary mb-2" id="btn-submit">打卡！</button>
+
+					<div  class="mask">
+					</div>
+				</form>
+			</div>
+
+		</div>
+
+	</body>
+
+	<script>
+		var acct;
+$('#host').text(location.host);
+if(location.hostname === '127.0.0.1')
+	acct = 'test'
+else 
+	getAcct();
+getTop3();
+
+function getAcct() {
+	$.ajax({
+		url:'/',
+		success:(data,status,xhr) => {
+			var rr = /"me":"(\d)"/.exec(data)
+			if(rr && rr[1]) {
+				var me = rr[1];
+				$.ajax({
+					type:'Get',
+					url:'/api/v1/accounts/' + me,
+					success:(j,status,xhr) => {
+						console.log(j["display_name"]);
+						acct = '@' + j["acct"];
+
+						$('#account-info .card-title').text(j["display_name"]);
+						$('#account-info .card-img-top')[0].src = j["avatar"];
+						$('#name-a')[0].href = acct;
+					}
+				});
+			}
+			else {
+				alert('未登录?');
+				location.href= "/"
+			}
+		}
+	});
+}
+
+function getTop3() {
+    $.ajax({
+        url:'api/top3/' + acct,
+        success:(data,status,xhr) => {
+            console.log(data);
+            var it = data["top3"];
+            $('#top-it').children().text((i) => {
+                return it[i] ? `${it[i]["name"]} : ${it[i]["count"]}次` : '/';
+            });
+        }
+    });
+}
+
+function startCheck() {
+	if($('.mask').is(':hidden'))
+		return;
+    $('.mask').hide();
+	$.ajax({
+		url: 'api/its',
+		success: (result,status,xhr) => {
+
+			var items = result["its"];
+			items.forEach((e) => {
+				$('.it-new').before(`<button type="button" class="btn btn-secondary btn-sm it-exi">${e}</button>`);
+			});
+			$('.it-new').click(() => {
+				$('#it-input').prop('readonly', false);
+				$('#it-input').val('');
+				$('#it-input').focus();
+			});
+			$('.it-exi').click((e) => {
+				$('#it-input').prop('readonly', true);
+				$('#it-input').val($(e.target).text());
+			});
+		},
+		error: (xhr,status,error) => {
+			alert('网络故障？\n' + error);
+			$('#btn-submit').prop('disabled', false);
+		}
+	});
+
+}
+
+function send() {
+	var it = $('#it-input').val();
+	if(it) {
+		$('#btn-submit').prop('disabled', true);
+		$.ajax({
+			type: 'POST',
+			url: 'api/send',
+			data: {
+				acct: acct,
+				it : it
+			},
+			success: (result,status,xhr) => {
+				alert('已打卡！');
+				console.log(result);
+				$('#it-input').val('');
+				$('#btn-submit').prop('disabled', false);
+			},
+			error: (xhr,status,error) => {
+				alert(`发送失败\n${error} : ${xhr.responseText}`);
+				$('#btn-submit').prop('disabled', false);
+			}
+		});
+	}
+}
+	</script>
+
+
+</html>
