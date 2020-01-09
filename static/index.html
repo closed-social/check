@@ -81,7 +81,7 @@ function getAcct() {
 	$.ajax({
 		url:'/',
 		success:(data,status,xhr) => {
-			var rr = /"me":"(\d)"/.exec(data)
+			var rr = /"me":"(\d+)"/.exec(data)
 			if(rr && rr[1]) {
 				var me = rr[1];
 				$.ajax({
