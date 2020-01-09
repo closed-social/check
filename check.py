@@ -82,5 +82,26 @@ def acct_page(acct):
     
     return render_template('acct.html', acct=acct,rs=rs[::-1])
 
+@app.route('/打卡/web/it/<it>')
+def it_page(it):
+    t1 = db.session.query(
+            Record.acct, db.func.count(Record.id).label('acct')
+        ).group_by(Record.acct).filter_by(it=it).order_by(db.desc('acct')).first()
+    
+    if(t1):
+        top = t1[0]
+        times = t1[1]
+    else:
+        top = times = '/'
+
+    query = Record.query.filter_by(it=it)
+    rs = [{
+            'acct'  : e.acct,
+            'date': e.tt.strftime('%Y-%m-%d %I:%M:%S %p')
+        } for e in query.all()
+        ]
+    
+    return render_template('it.html', it=it,rs=rs[::-1],top=top,times=times)
+
 if __name__ == '__main__':
     app.run()
