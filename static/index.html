@@ -6,9 +6,11 @@
 		<link href="https://netdna.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
 		<link href="https://cdn.bootcss.com/twitter-bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
 		<script src="https://cdn.bootcss.com/jquery/3.4.1/jquery.min.js"></script>
+		<script src="https://closed.social/js/qrcode.js"></script>
     	<script src="https://cdn.bootcss.com/twitter-bootstrap/4.3.1/js/bootstrap.min.js"></script>
 		<title> 闭社打卡 </title>
 		<style>
+		
 .btns .btn {
 	margin:3px;
 }
@@ -41,7 +43,6 @@
 				</ul>
 				<div class="card-body">
 					<a href="web/all" class="card-link">所有</a>
-					<a href="#" onclick="startCheck()" class="card-link">去打卡！</a>
 				</div>
 			</div>
 
@@ -92,6 +93,9 @@
   ^_^
 </button>
 
+<canvas id="share-canvas" height=400 width=300></canvas>
+<div id="qrcode" style="display:none"></div>
+
 	</body>
 
 	<script>
@@ -101,6 +105,8 @@ if(location.hostname === '127.0.0.1')
 	acct = 'test'
 else 
 	getAcct();
+
+startCheck();
 
 function getAcct() {
 	$.ajax({
@@ -177,6 +183,10 @@ function startCheck() {
 
 function send() {
 	var it = $('#it-input').val();
+	if (it.includes('.') || it.includes('/') || it.includes('?') ) {
+	    alert('为了方便查看，请不要包含/?.等符号');
+	    it = '';
+	}
 	if(it) {
 		$('#btn-submit').prop('disabled', true);
 		$.ajax({
@@ -196,6 +206,43 @@ function send() {
 			    if(!$('#exampleModal').hasClass('show'))
 				    $('#modealButton').click();
 				//console.log(result);
+				var canvas = $("#share-canvas")[0],
+                context = canvas.getContext("2d"),
+                img = new Image();
+    
+                img.onload = () => {
+                  // create pattern
+                    var ptrn = context.createPattern(img, 'repeat'); // Create a pattern with this image, and set it to "repeat".
+                    context.fillStyle = ptrn;
+                    context.fillRect(0, 0, canvas.width, canvas.height); // context.fillRect(x, y, width, height);
+                }
+                img.src="/system/media_attachments/files/000/002/222/original/fb79d536f24f0a52.jpg";
+                console.log(decodeURI(location.origin + location.pathname + `web/it/${it}`));
+                var qrcode = new QRCode($('#qrcode')[0],{
+                        text:decodeURI(location.origin + location.pathname + `web/it/${it}`),
+                        bgColor:"#ff00ff",
+                        width: 128,
+	                    height: 128,
+                        correctLevel : QRCode.CorrectLevel.L
+                    });    
+                
+                setTimeout( () => {
+                    context.drawImage($('#qrcode img')[0], 150, 240);
+                    context.font = "38px Comic Sans MS";
+                    context.fillStyle = "#606060";
+                    context.fillText("我已在闭社", 30, 50);
+                    context.fillText("打卡", 40, 100);
+                    context.fillText(result+'次', 30, 250);
+                    context.font = "45px Comic Sans MS";
+                    context.fillStyle = "#404040";
+                    context.fillText(it, 60, 175, 220);
+                    
+                    context.font = "12px Comic Sans MS";
+                    context.fillStyle = "#202020";
+                    context.fillText("闭社打卡，", 150,385);
+                    context.fillText("可能是最粗制滥造的打卡工具没有之一", 155,396, 135);
+				}, 500);
+				
 				
 				$('#it-input').val('');
 				$('#btn-submit').prop('disabled', false);
@@ -216,7 +263,14 @@ function send() {
 }
 
 function share() {
-    alert('还没实现，明天写。咕咕咕。');
+    $('#share-canvas')[0].toBlob(blob => {
+    
+    if(navigator.canShare && navigator.canShare({files: [new File([blob],'share.png', {type: blob.type})], title:'Title', text:'text'}))
+        navigator.share({files: [new File([blob],'share.png', {type: blob.type})], title:'Title', text:'text'})
+    else
+        alert('浏览器或平台不支持分享，可手动保存图片');    
+    }
+    ,'image/png');
 }
 	</script>
 
