@@ -209,42 +209,37 @@ function send() {
 				var canvas = $("#share-canvas")[0],
                 context = canvas.getContext("2d"),
                 img = new Image();
-    
-                img.onload = () => {
-                  // create pattern
-                    var ptrn = context.createPattern(img, 'repeat'); // Create a pattern with this image, and set it to "repeat".
-                    context.fillStyle = ptrn;
-                    context.fillRect(0, 0, canvas.width, canvas.height); // context.fillRect(x, y, width, height);
-                }
                 img.src="/system/media_attachments/files/000/002/222/original/fb79d536f24f0a52.jpg";
-                
                 var qrcode = new QRCode($('#qrcode')[0],{
                         text:decodeURI(location.origin + location.pathname) + `web/it/${it}`,
                         bgColor:"#ff00ff",
                         width: 128,
 	                    height: 128,
                         correctLevel : QRCode.CorrectLevel.L
-                    });    
-                
+                });    
+                img.onload = () => {
+                  // create pattern
+                    var ptrn = context.createPattern(img, 'repeat'); // Create a pattern with this image, and set it to "repeat".
+                    context.fillStyle = ptrn;
+                    context.fillRect(0, 0, canvas.width, canvas.height); // context.fillRect(x, y, width, height);
+              
+	    			context.drawImage($('#qrcode canvas')[0], 150, 240);
 
-				context.drawImage($('#qrcode canvas')[0], 150, 240);
+	    			context.drawImage($('.card-img-top')[0], 250, 0, 50, 50);
+	    			context.font = "38px Comic Sans MS";
+	    			context.fillStyle = "#606060";
+	    			context.fillText("我已在闭社", 30, 50);
+	    			context.fillText("打卡", 40, 100);
+	    			context.fillText(result+'次', 30, 250);
+	    			context.font = "45px Comic Sans MS";
+	    			context.fillStyle = "#404040";
+    				context.fillText(it, 60, 175, 220);
 
-
-				context.drawImage($('.card-img-top')[0], 250, 0, 50, 50);
-				context.font = "38px Comic Sans MS";
-				context.fillStyle = "#606060";
-				context.fillText("我已在闭社", 30, 50);
-				context.fillText("打卡", 40, 100);
-				context.fillText(result+'次', 30, 250);
-				context.font = "45px Comic Sans MS";
-				context.fillStyle = "#404040";
-				context.fillText(it, 60, 175, 220);
-
-				context.font = "12px Comic Sans MS";
-				context.fillStyle = "#202020";
-				context.fillText("闭社打卡，", 150,385);
-				context.fillText("可能是最粗制滥造的打卡工具没有之一", 155,396, 135);
-
+				    context.font = "12px Comic Sans MS";
+				    context.fillStyle = "#202020";
+				    context.fillText("闭社打卡，", 150,385);
+				    context.fillText("可能是最粗制滥造的打卡工具没有之一", 155,396, 135);
+                }
 				$('#it-input').val('');
 				$('#btn-submit').prop('disabled', false);
 			},
