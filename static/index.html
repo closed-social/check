@@ -217,16 +217,22 @@ function send() {
                     context.fillRect(0, 0, canvas.width, canvas.height); // context.fillRect(x, y, width, height);
                 }
                 img.src="/system/media_attachments/files/000/002/222/original/fb79d536f24f0a52.jpg";
-                console.log(decodeURI(location.origin + location.pathname + `web/it/${it}`));
+                
                 var qrcode = new QRCode($('#qrcode')[0],{
-                        text:decodeURI(location.origin + location.pathname + `web/it/${it}`),
+                        text:decodeURI(location.origin + location.pathname) + `web/it/${it}`,
                         bgColor:"#ff00ff",
                         width: 128,
 	                    height: 128,
                         correctLevel : QRCode.CorrectLevel.L
                     });    
                 
-                setTimeout( () => {
+                var inter; 
+                inter = setInterval( () => {
+                    if(!( $('#qrcode img')[0] && $('#qrcode img')[0].src)) {
+                        console.log('wait qrcode...');
+                        return;
+                    }
+                    clearInterval(inter);
                     context.drawImage($('#qrcode img')[0], 150, 240);
                     context.font = "38px Comic Sans MS";
                     context.fillStyle = "#606060";
@@ -242,7 +248,6 @@ function send() {
                     context.fillText("闭社打卡，", 150,385);
                     context.fillText("可能是最粗制滥造的打卡工具没有之一", 155,396, 135);
 				}, 500);
-				
 				
 				$('#it-input').val('');
 				$('#btn-submit').prop('disabled', false);
