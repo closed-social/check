@@ -226,29 +226,31 @@ function send() {
                         correctLevel : QRCode.CorrectLevel.L
                     });    
                 
-                var inter; 
-                inter = setInterval( () => {
-                    if(!( $('#qrcode img')[0] && $('#qrcode img')[0].src)) {
-                        console.log('wait qrcode...');
-                        return;
-                    }
-                    clearInterval(inter);
-                    context.drawImage($('#qrcode img')[0], 150, 240);
-                    context.font = "38px Comic Sans MS";
-                    context.fillStyle = "#606060";
-                    context.fillText("我已在闭社", 30, 50);
-                    context.fillText("打卡", 40, 100);
-                    context.fillText(result+'次', 30, 250);
-                    context.font = "45px Comic Sans MS";
-                    context.fillStyle = "#404040";
-                    context.fillText(it, 60, 175, 220);
-                    
-                    context.font = "12px Comic Sans MS";
-                    context.fillStyle = "#202020";
-                    context.fillText("闭社打卡，", 150,385);
-                    context.fillText("可能是最粗制滥造的打卡工具没有之一", 155,396, 135);
+				var inter; 
+				inter = setInterval( () => {
+					if(!( $('#qrcode img')[0] && $('#qrcode img')[0].src)) {
+						console.log('wait qrcode...');
+						return;
+					}
+					clearInterval(inter);
+					context.drawImage($('#qrcode img')[0], 150, 240);
 				}, 500);
-				
+
+				context.drawImage($('.card-img-top')[0], 250, 0, 50, 50);
+				context.font = "38px Comic Sans MS";
+				context.fillStyle = "#606060";
+				context.fillText("我已在闭社", 30, 50);
+				context.fillText("打卡", 40, 100);
+				context.fillText(result+'次', 30, 250);
+				context.font = "45px Comic Sans MS";
+				context.fillStyle = "#404040";
+				context.fillText(it, 60, 175, 220);
+
+				context.font = "12px Comic Sans MS";
+				context.fillStyle = "#202020";
+				context.fillText("闭社打卡，", 150,385);
+				context.fillText("可能是最粗制滥造的打卡工具没有之一", 155,396, 135);
+
 				$('#it-input').val('');
 				$('#btn-submit').prop('disabled', false);
 			},
